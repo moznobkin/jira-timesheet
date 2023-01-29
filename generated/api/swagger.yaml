@@ -1,0 +1,353 @@
+openapi: 3.0.0
+info:
+  title: Jira Timesheet
+  description: Jira Timesheet
+  version: 0.0.3-oas3
+servers:
+- url: https://jira-timesheets.vimplelcom.ru/
+tags:
+- name: jira-timesheet
+  description: Jira Timesheet
+paths:
+  /api/v1/monthly:
+    post:
+      tags:
+      - productOffer
+      summary: posts monthly TS
+      operationId: postMonthlyTimesheet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MonthlyTimesheet'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthlyTimesheetResult'
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        "405":
+          description: Method Not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+      deprecated: false
+components:
+  schemas:
+    MonthlyTimesheet:
+      title: MonthlyTimesheet
+      type: object
+      properties:
+        startDate:
+          type: string
+          description: start date for target period (if empty the start date of the
+            current month will be used)
+          format: date-time
+        endDate:
+          type: string
+          description: end date for target period (if empty the end date of the current
+            month will be used)
+          format: date-time
+        employees:
+          type: array
+          description: Array of employees.
+          items:
+            $ref: '#/components/schemas/Employee'
+        worklogTempates:
+          type: array
+          description: WorklogTemplates
+          items:
+            $ref: '#/components/schemas/WorklogTemplate'
+        altWorkdays:
+          type: array
+          description: alternative workdays
+          items:
+            $ref: '#/components/schemas/AltWorkday'
+        strictHours:
+          type: integer
+          description: if positive totals in worklog templates will be validated
+      description: Monthy timesheet
+    MonthlyTimesheetResult:
+      title: MonthlyTimesheetResult
+      type: object
+      properties:
+        startDate:
+          type: string
+          description: start date for target period
+          format: date-time
+        endDate:
+          type: string
+          description: end date for target period
+          format: date-time
+        employees:
+          type: array
+          description: Array of employees result.
+          items:
+            $ref: '#/components/schemas/EmployeeResult'
+        worklogTempates:
+          type: array
+          description: WorklogTemplates
+          items:
+            $ref: '#/components/schemas/WorklogTemplate'
+        altWorkdays:
+          type: array
+          description: alternative workdays
+          items:
+            $ref: '#/components/schemas/AltWorkday'
+      description: Monthy timesheet result
+      example:
+        endDate: 2000-01-23T04:56:07.000+00:00
+        worklogTempates:
+        - employeeName: employeeName
+          category: category
+          worklogs:
+          - duration: 1
+            issueId: issueId
+          - duration: 1
+            issueId: issueId
+        - employeeName: employeeName
+          category: category
+          worklogs:
+          - duration: 1
+            issueId: issueId
+          - duration: 1
+            issueId: issueId
+        altWorkdays:
+        - dayOfMonth: dayOfMonth
+        - dayOfMonth: dayOfMonth
+        employees:
+        - endDate: 2000-01-23T04:56:07.000+00:00
+          name: name
+          worklogsTotal: 6.0274563
+          category: category
+          startDate: 2000-01-23T04:56:07.000+00:00
+          worklogs:
+          - duration: 0
+            date: 2000-01-23T04:56:07.000+00:00
+            issueId: issueId
+          - duration: 0
+            date: 2000-01-23T04:56:07.000+00:00
+            issueId: issueId
+        - endDate: 2000-01-23T04:56:07.000+00:00
+          name: name
+          worklogsTotal: 6.0274563
+          category: category
+          startDate: 2000-01-23T04:56:07.000+00:00
+          worklogs:
+          - duration: 0
+            date: 2000-01-23T04:56:07.000+00:00
+            issueId: issueId
+          - duration: 0
+            date: 2000-01-23T04:56:07.000+00:00
+            issueId: issueId
+        startDate: 2000-01-23T04:56:07.000+00:00
+    AltWorkday:
+      type: object
+      properties:
+        dayOfMonth:
+          type: string
+          description: day in format DDMM
+      example:
+        dayOfMonth: dayOfMonth
+    EmployeeResult:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of employee
+        category:
+          type: string
+          description: Category to match from WorklogTemplates
+        startDate:
+          type: string
+          description: Employee startdate (if not suuplied - whole month)
+          format: date-time
+        endDate:
+          type: string
+          description: Employee enddate (if not suuplied - whole month)
+          format: date-time
+        worklogs:
+          type: array
+          description: worklogs
+          items:
+            $ref: '#/components/schemas/WorklogResult'
+        worklogsTotal:
+          type: number
+          description: total amount in hours
+          format: float
+      example:
+        endDate: 2000-01-23T04:56:07.000+00:00
+        name: name
+        worklogsTotal: 6.0274563
+        category: category
+        startDate: 2000-01-23T04:56:07.000+00:00
+        worklogs:
+        - duration: 0
+          date: 2000-01-23T04:56:07.000+00:00
+          issueId: issueId
+        - duration: 0
+          date: 2000-01-23T04:56:07.000+00:00
+          issueId: issueId
+    Employee:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token to access Jira
+        name:
+          type: string
+          description: Name of employee
+        category:
+          type: string
+          description: Category to match from WorklogTemplates
+        startDate:
+          type: string
+          description: Employee startdate (if not suuplied - whole month)
+          format: date-time
+        endDate:
+          type: string
+          description: Employee enddate (if not suuplied - whole month)
+          format: date-time
+        vacations:
+          type: array
+          description: employee official vacations
+          items:
+            $ref: '#/components/schemas/Vacation'
+    Vacation:
+      type: object
+      properties:
+        startDate:
+          type: string
+          description: Startdate
+          format: date-time
+        endDate:
+          type: string
+          description: Enddate
+          format: date-time
+      description: Dates in period will be excluded when worklogs are created
+    WorklogTemplate:
+      type: object
+      properties:
+        employeeName:
+          type: string
+          description: Particular employee to match (if used category will be ignored)
+        category:
+          type: string
+          description: Category to match all employees
+        worklogs:
+          type: array
+          description: Worklog
+          items:
+            $ref: '#/components/schemas/Worklog'
+      example:
+        employeeName: employeeName
+        category: category
+        worklogs:
+        - duration: 1
+          issueId: issueId
+        - duration: 1
+          issueId: issueId
+    Worklog:
+      type: object
+      properties:
+        issueId:
+          type: string
+          description: jira issue Id
+        duration:
+          type: integer
+          description: value in minutes per day if strictHours specified sum should
+            be equal to it
+      example:
+        duration: 1
+        issueId: issueId
+    WorklogResult:
+      type: object
+      properties:
+        issueId:
+          type: string
+          description: jira issue Id
+        duration:
+          type: integer
+          description: value in minutes per day
+        date:
+          type: string
+          format: date-time
+      example:
+        duration: 0
+        date: 2000-01-23T04:56:07.000+00:00
+        issueId: issueId
+    ApiErrorResponse:
+      title: ApiErrorResponse
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+        message:
+          type: string
+          description: Api Exception Error
+        status:
+          type: string
+          description: HTTP Status
+        timestamp:
+          type: string
+          description: Current date timestamp
+          format: date-time-time
+    Error:
+      title: Error
+      type: object
+      properties:
+        detail:
+          type: string
+          description: The complete details of Exception messages.
+        source:
+          $ref: '#/components/schemas/Source'
+    Source:
+      title: Source
+      type: object
+      properties:
+        exception:
+          type: string
+          description: Actual exception occures.
+        pointer:
+          type: string
+          description: The field for which validation fails.
