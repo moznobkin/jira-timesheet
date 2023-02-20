@@ -188,7 +188,11 @@ func PushToJira(tsRes *sw.MonthlyTimesheetResult) {
 		if err != nil {
 			log.Printf("error for %s", e.Name)
 		} else {
-			serv.Process()
+			c := make(chan Message, 100)
+			serv.Process(c)
+			for m := range c {
+				log.Println(m)
+			}
 		}
 	}
 }
