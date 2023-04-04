@@ -1,5 +1,7 @@
 package main
 
+// Проверять тут https://confluence.veon.com/pages/viewpage.action?pageId=190188828
+// отпуска https://confluence.veon.com/pages/viewpage.action?pageId=227713180
 import (
 	"log"
 	"net/http"

@@ -22,7 +22,7 @@ func Test_MonthlyTimesheet_real(t *testing.T) {
 	// }))
 	// defer server.Close()
 	json.RegisterExtension(&timeDecodeExtension{})
-	ts, err := ReadStruct[sw.MonthlyTimesheet]("../data/json/monthlyTs.json")
+	ts, err := ReadStruct[sw.MonthlyTimesheet]("../data/json/monthlyTs1.json")
 	require.NoError(t, err)
 
 	tsExpected, err := ReadStruct[sw.MonthlyTimesheetResult]("../data/json/monthlyTsResult.json")

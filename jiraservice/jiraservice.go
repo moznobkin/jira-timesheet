@@ -57,7 +57,7 @@ func (s *jiraService) getSelf() (*jira.User, error) {
 	return u, nil
 }
 func (s *jiraService) findIssues(startDate time.Time, endDate time.Time) ([]jira.Issue, error) {
-	issues, _, err := s.client.Issue.Search(fmt.Sprintf("worklogAuthor='%s' and worklogDate>=%s and worklogDate<=%s", s.userName, "2023-01-01", "2023-01-31"), &jira.SearchOptions{StartAt: 0, MaxResults: 1000})
+	issues, _, err := s.client.Issue.Search(fmt.Sprintf("worklogAuthor='%s' and worklogDate>=%s and worklogDate<=%s", s.userName, startDate.Format("2006-01-02"), endDate.Format("2006-01-02")), &jira.SearchOptions{StartAt: 0, MaxResults: 1000})
 	if err != nil {
 		return nil, err
 	}
